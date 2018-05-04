@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyan.dao.ServiceComplainMapper">
+	<!--查询公共财产信息-->
+	<select id="queryServiceComplainMessage" parameterType="com.keyan.entity.ServiceComplainView" resultType="com.keyan.entity.ServiceComplainView">
+		<![CDATA[
+		select
+		t.id,
+		t.complainContent,
+		t.complainDate,
+		t.complainUserid,
+		t.handleAdvice,
+		t.handleDate,
+		t.handleUserName,
+		t.result,
+		t.complainTitle,
+		u.name as complainName
+		from servicecomplain t
+		LEFT JOIN userinfo u on u.userId=t.complainUserid
+		where 1=1
+		]]>
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND u.name like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>	
+		<if test="complainUserid != null">
+			<![CDATA[
+			AND t.complainUserid=#{complainUserid}
+			]]>
+		</if>
+		<![CDATA[
+		limit #{startNumber},#{pageSize}
+		]]>
+	</select>
+
+	<!--查询相关项目总数-->
+	<select id="queryServiceComplainCount" parameterType="com.keyan.entity.ServiceComplainView" resultType="Integer">
+		select 
+		count(*) 
+		from servicecomplain t
+		LEFT JOIN userinfo u on u.userId=t.complainUserid
+		where 1=1
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND name like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>
+		<if test="complainUserid != null">
+			<![CDATA[
+			AND complainUserid=#{complainUserid}
+			]]>
+		</if>
+	</select>
+
+	<!-- 项目删除 （批量删除）-->
+	<delete id="deleteList" parameterType="java.util.Map">
+		delete from servicecomplain where id in
+		<foreach collection="servicecomplainList" item="item" index="index"
+		open="(" separator="," close=")">#{item}</foreach>
+	</delete>
+
+	<!--新添项目-->
+	<insert id="saveServiceComplain" parameterType="com.keyan.entity.ServiceComplain">
+        insert into servicecomplain(complainContent,complainDate,complainUserid,result,complainTitle) 
+        values(
+        #{complainContent},#{complainDate},#{complainUserid},#{result},#{complainTitle})
+    </insert>
+
+	<update id="updateServiceComplain" parameterType="com.keyan.entity.ServiceComplain">
+		update
+		servicecomplain t 
+		set t.handleUserName=#{handleUserName},t.handleDate=#{handleDate},t.handleAdvice=#{handleAdvice},t.result=#{result}
+		where t.id=#{id}
+	</update>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyan.dao.ParkPlaceMapper">
+	<!--查询公共财产信息-->
+	<select id="queryParkPlaceMessage" parameterType="com.keyan.entity.ParkPlaceView" resultType="com.keyan.entity.ParkPlaceView">
+		<![CDATA[
+		SELECT
+		t.id,
+		t.parkPlaceArea,
+		t.parkPlaceCode,
+		t.userId,
+		u. NAME AS userName,
+		u.houseNumber,
+		b.buildName,
+		t.plateNumber
+		FROM
+		parkplace t
+		INNER JOIN userinfo u ON u.userId = t.userId
+		left join buildinginfo b on b.id=u.buildIngId
+		where 1=1
+		]]>
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND (b.buildName like CONCAT('%', #{keyValue}, '%') or t.plateNumber like CONCAT('%', #{keyValue}, '%')) 
+			]]>
+		</if>	
+		<if test="userId != null">
+			<![CDATA[
+			AND t.userId= #{userId}
+			]]>
+		</if>
+		<![CDATA[
+		limit #{startNumber},#{pageSize}
+		]]>
+	</select>
+
+	<!--查询相关项目总数-->
+	<select id="queryParkPlaceMessageCount" parameterType="com.keyan.entity.ParkPlaceView" resultType="Integer">
+		select 
+		count(*) 
+		from parkplace t
+		INNER JOIN userinfo u ON u.userId = t.userId
+		left join buildinginfo b on b.id=u.buildIngId
+		where 1=1
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND (b.buildName like CONCAT('%', #{keyValue}, '%') or t.plateNumber like CONCAT('%', #{keyValue}, '%')) 
+			]]>
+		</if>
+		<if test="userId != null">
+			<![CDATA[
+			AND t.userId= #{userId}
+			]]>
+		</if>
+	</select>
+
+	<!-- 项目删除 （批量删除）-->
+	<delete id="deleteList" parameterType="java.util.Map">
+		delete from parkplace where id in
+		<foreach collection="parkPlaceList" item="item" index="index"
+		open="(" separator="," close=")">#{item}</foreach>
+	</delete>
+
+	<!--新添项目-->
+	<insert id="saveParkPlace" parameterType="com.keyan.entity.ParkPlace">
+        insert into parkplace(parkPlaceArea,parkPlaceCode,userId,plateNumber) 
+        values(
+        #{parkPlaceArea},#{parkPlaceCode},#{userId},#{plateNumber})
+    </insert>
+
+</mapper>

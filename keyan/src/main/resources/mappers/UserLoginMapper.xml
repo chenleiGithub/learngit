@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyan.dao.UserLoginMapper">
+	
+	<!--用户登录-->
+	<select id="login" parameterType="com.keyan.entity.UserInfo" resultType="com.keyan.entity.UserInfoEntity">
+		select * from userInfo
+		where userName=#{userName} and password=#{password} and isAuthentication=1
+	</select>
+	
+	<!--查看用户信息-->
+	<select id="queryUserInfo" parameterType="com.keyan.entity.UserInfoEntity" resultType="com.keyan.entity.UserInfoEntity">
+		select 
+		t.userId,
+		t.userName,
+		t.password,	
+		t.name,
+		t.sex,
+		t.houseNumber,
+		t.userType,
+		t.liveType,
+		t.phone,
+		t.cardId,
+		t.buildIngId,
+		b.buildName,
+		t.isAuthentication
+		from userinfo t
+		left join buildIngInfo b on b.id=t.buildIngId
+		where t.userType!=0
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND (t.userName like CONCAT('%', #{keyValue}, '%') or t.name like CONCAT('%', #{keyValue}, '%'))
+			]]>
+		</if>	
+		<if test="startNumber != null and pageSize != null">
+			<![CDATA[
+			limit #{startNumber},#{pageSize}
+			]]>
+		</if>
+	</select>
+	
+	<!--查询非管理员总数-->
+	<select id="queryUserInfoCount"  resultType="Integer">
+		select count(*) from userinfo where userType!=1
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND userName like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>
+	</select>
+	
+	<!--通过userId查询该用户的密码-->
+	<select id="queryPwd" resultType="String" parameterType="Integer">
+		select password from userinfo where userId=#{userId}
+	</select>
+	
+	<!--通过userId修改密码-->
+	<update id="updatePwd" parameterType="com.keyan.entity.UserInfoEntity">
+	      update userinfo set password=#{password} where USERID=#{userId}
+	</update>
+	
+	<!--修改用户权限-->
+	<update id="updateByUserId" parameterType="java.util.Map">
+		update userinfo b set b.isAuthentication=#{isAuthentication} where b.userId in
+	<foreach collection="userIdList" item="item" index="index" open="("
+		separator="," close=")">
+		#{item}
+	</foreach>
+	</update>
+	
+	<!--通过userId查询用户详情-->
+	<select id="queryByUserId" resultType="com.keyan.entity.UserInfoEntity" parameterType="Integer">
+		select 
+		t.sex,
+		t.userName,
+		t.idCard,
+		sc.schoolName,
+		cl.className,
+		t.userType
+		from userinfo t
+		left join userinorg us ON us.userId=t.userId
+		left join schoolInfo sc ON sc.schoolId=us.organizationId
+		left join classInfo cl ON cl.classId=us.classId
+		where t.userId=#{userId}
+	</select>
+	
+	<!--查看用户名是否存在-->
+	<select id="queryByUserName" resultType="Integer" parameterType="String">
+		select count(*) from userinfo where userName=#{userName}
+	</select>
+	
+	<!--添加新用户-->
+	<insert id="saveUserInfo" parameterType="com.keyan.entity.UserInfo">
+        insert into userInfo(userName,password,name,sex,houseNumber,userType,liveType,phone,isAuthentication,cardId,buildIngId) 
+        values(
+        #{userName},#{password},#{name},#{sex},#{houseNumber},#{userType},#{liveType},#{phone},#{isAuthentication},#{cardId},#{buildIngId})
+    </insert>
+    
+    <delete id="deleteUserInfoList" parameterType="java.util.Map">
+		delete from userinfo where userId in
+		<foreach collection="userList" item="item" index="index"
+		open="(" separator="," close=")">#{item}</foreach>
+	</delete>
+</mapper>

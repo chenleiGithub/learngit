@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyan.dao.MoveInfoMapper">
+	<!--查询迁移信息-->
+	<select id="queryMoveInfo" parameterType="com.keyan.entity.MoveInfoView" resultType="com.keyan.entity.MoveInfoView">
+		<![CDATA[
+		select
+		t.id,
+		t.userId,
+		t.manager,
+		t.moveDate,
+		t.moveReason,
+		t.note,
+		t.phone,
+		u.name
+		from moveinfo t
+		LEFT JOIN userinfo u on u.userId=t.userId
+		where 1=1
+		]]>
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND u.name like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>	
+		<![CDATA[
+		limit #{startNumber},#{pageSize}
+		]]>
+	</select>
+
+	<!--查询相关项目总数-->
+	<select id="queryMoveInfoCount" parameterType="com.keyan.entity.MoveInfoView" resultType="Integer">
+		select 
+		count(*) 
+		from moveinfo t
+		LEFT JOIN userinfo u on u.userId=t.userId
+		where 1=1
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND u.name like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>
+	</select>
+
+	<!-- 项目删除 （批量删除）-->
+	<delete id="deleteList" parameterType="java.util.Map">
+		delete from moveinfo where id in
+		<foreach collection="moveList" item="item" index="index"
+		open="(" separator="," close=")">#{item}</foreach>
+	</delete>
+
+	<!--新添项目-->
+	<insert id="saveMoveInfo" parameterType="com.keyan.entity.MoveInfo">
+        insert into moveinfo(userId,manager,moveDate,moveReason,note,phone) 
+        values(
+        #{userId},#{manager},#{moveDate},#{moveReason},#{note},#{phone})
+    </insert>
+
+</mapper>

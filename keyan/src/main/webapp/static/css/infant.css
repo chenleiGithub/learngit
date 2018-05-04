@@ -1,0 +1,118 @@
+.blur-login {
+    background: #394557 url(../images/meteorshower2.jpg);
+    font-family: 微软雅黑, "museo500", "Arial", serif;
+}
+
+.table-list-align-right {
+    text-align: right;
+}
+
+.table-list-align-left {
+    text-align: left;
+}
+
+.table-list-align-center {
+    text-align: center;
+}
+
+.table-th-align-center {
+    padding-left: 30px;
+}
+
+table.dataTable thead > tr > th {
+    padding: 8px;
+}
+
+.social-auth-links .row span {
+    height: 25px;
+    padding-left: 30px;
+    margin-left: 20px;
+}
+
+.qq {
+    float: left;
+    background: url("../images/snsqq.png") no-repeat 2px 3px;
+}
+
+.weibo {
+    float: left;
+    background: url("../images/snsweibo.png") no-repeat 2px 3px;
+}
+
+.wechat {
+    float: left;
+    background: url("../images/snswechat.png") no-repeat 2px 3px;
+}
+
+.welcomePage {
+    padding-top: 8%;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    background: url("../images/faceToFace.png") no-repeat 50% 22%;
+}
+
+.welcomeText {
+    font-size: 35px;
+    width: 100%;
+}
+
+.widget-box {
+    visibility: hidden;
+    position: fixed;
+    z-index: -5;
+}
+
+.visible {
+    visibility: visible;
+    position: relative;
+    z-index: auto;
+}
+
+.login-input {
+    text-indent: 10px;
+    height: 40px;
+    border: none;
+    background: none;
+    width: 140px;
+    font-size: 14px;
+    color: #4b4b4b;
+    font-family: '微软雅黑', serif;
+}
+
+.login-span {
+    width: 60px;
+    height: 40px;
+    line-height: 40px;
+    border-right: 1px solid #ccc;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.login-btn{
+    width: 60px;
+    float: right;
+    height: 33px;
+    background: rgb(226, 48, 19) none repeat scroll 0% 0%;
+    text-align: center;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    border: 0px none;
+}
+
+.signup-btn{
+    width: 300px;
+    float: right;
+    height: 40px;
+    line-height: 40px;
+    background: rgb(226, 48, 19) none repeat scroll 0% 0%;
+    text-align: center;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    border: 0px none;
+}
+.register_prompt_error{
+    font-size:12px;
+    color:#C8180B;
+}
+

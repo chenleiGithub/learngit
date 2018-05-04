@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyan.dao.ProjectMapper">
+	<!--查询相关项目-->
+	<select id="queryAuditMessage" parameterType="com.keyan.entity.ProjectMessage" resultType="com.keyan.entity.ProjectMessage">
+		<![CDATA[
+		select
+		t.projectId,
+		t.projectType,
+		t.projectName,
+		t.projectBudget,
+		t.projectDeadline,
+		u.userName
+		from projectMessage t
+		left join userInfo u on u.userId=t.responsePerson
+		where t.recycleStatus=#{recycleStatus}
+		]]>
+		<if test="projectApprove != null">
+			<![CDATA[
+			AND t.projectApprove=#{projectApprove}
+			]]>
+		</if>
+		<if test="responsePerson != null">
+			<![CDATA[
+			AND t.responsePerson=#{responsePerson}
+			]]>
+		</if>
+		<![CDATA[
+		limit #{startNumber},#{pageSize}
+		]]>
+	</select>
+
+	<!--查询相关项目总数-->
+	<select id="queryAuditMessageCount" parameterType="com.keyan.entity.ProjectMessage" resultType="Integer">
+		select 
+		count(*) 
+		from projectMessage
+		where projectApprove=#{projectApprove}
+		<if test="responsePerson != null">
+			<![CDATA[
+			AND responsePerson=#{responsePerson}
+			]]>
+		</if>
+	</select>
+
+	<!-- 项目删除 （批量删除）-->
+	<delete id="deleteList" parameterType="java.util.Map">
+		delete from projectMessage where projectId in
+		<foreach collection="projectList" item="item" index="index"
+		open="(" separator="," close=")">#{item}</foreach>
+	</delete>
+
+	<!--将项目的回收站状态改为（批量操作）-->
+	<update id="updateByProjectId" parameterType="java.util.Map">
+		update
+		projectMessage b 
+		set b.recycleStatus=#{recycleStatus}
+		<if test="projectApprove != null">
+			<![CDATA[
+			,b.projectApprove=#{projectApprove}
+			]]>
+		</if>
+		where b.projectId in
+		<foreach collection="projectList" item="item" index="index" open="("
+		separator="," close=")">
+		#{item}
+		</foreach>
+	</update>
+
+	<!--修改项目的审核状态（批量操作）-->
+	<update id="updateProjectApprove" parameterType="java.util.Map">
+		update projectMessage b set b.projectApprove=#{projectApprove} where b.projectId in
+		<foreach collection="projectList" item="item" index="index" open="("
+		separator="," close=")">#{item}</foreach>
+	</update>
+	
+	<!--通过项目id查询项目详情-->
+	<select id="queryByProjectId" parameterType="Integer" resultType="com.keyan.entity.ProjectMessage">
+		select
+		t.projectId,
+		t.projectType,
+		t.projectName,
+		t.projectBudget,
+		t.projectDeadline,
+		t.applyTime,
+		t.projectContent,
+		t.projectMembers,
+		u.userName
+		from projectMessage t
+		left join userInfo u on u.userId=t.responsePerson
+		where t.projectId=#{projectId}
+	</select>
+	
+	<!--通过项目id查询项目详情-->
+	<select id="queryMembers" parameterType="Integer" resultType="com.keyan.entity.ProjectMembers">
+		select
+		t.userName
+		from projectmember t
+		where t.projectId=#{projectId}
+	</select>
+	
+	<!--修改项目-->
+	<update id="updateProject" parameterType="com.keyan.entity.ProjectMessage">
+		update
+		projectMessage b 
+		set
+		b.projectApprove=0,
+		b.projectType=#{projectType},
+		b.projectName=#{projectName},
+		b.projectBudget=#{projectBudget},
+		b.projectDeadline=#{projectDeadline},
+		b.projectContent=#{projectContent}
+		where b.projectId=#{projectId}
+	</update>
+	
+	<!--新添项目-->
+	<insert id="saveProject" parameterType="com.keyan.entity.ProjectMessage">
+        insert into projectMessage(projectType,projectName,responsePerson,projectContent,projectBudget,projectDeadline,projectApprove,recycleStatus,applyTime,projectMembers) 
+        values(
+        #{projectType},#{projectName},#{responsePerson},#{projectContent},#{projectBudget},#{projectDeadline},#{projectApprove},#{recycleStatus},#{applyTime},#{projectMembers})
+    </insert>
+
+</mapper>

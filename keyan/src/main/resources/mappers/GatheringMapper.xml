@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyan.dao.GatheringMapper">
+	<!--查询公共财产信息-->
+	<select id="queryGatheringMessage" parameterType="com.keyan.entity.GatheringView" resultType="com.keyan.entity.GatheringView">
+		<![CDATA[
+		select
+		t.id,
+		t.gatheringCode,
+		t.gatheringDate,
+		t.gatheringMoney,
+		t.gatheringReason,
+		t.gatheringStyle,
+		t.gatheringUserId,
+		t.paymentUserId,
+		u1.name as gatheringUserName,
+		u2.name as paymentUserName
+		from gathering t
+		left join userInfo u1 on u1.userId=t.gatheringUserId
+		left join userinfo u2 on u2.userId=t.paymentUserId
+		where 1=1
+		]]>
+		<if test="gatheringReason != null">
+			<![CDATA[
+			AND t.gatheringReason=#{gatheringReason}
+			]]>
+		</if>	
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND t.gatheringCode like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>	
+		<![CDATA[
+		limit #{startNumber},#{pageSize}
+		]]>
+	</select>
+
+	<!--查询相关项目总数-->
+	<select id="queryGatheringMessageCount" parameterType="com.keyan.entity.GatheringView" resultType="Integer">
+		select 
+		count(*) 
+		from gathering
+		where 1=1
+		<if test="gatheringReason != null">
+			<![CDATA[
+			AND gatheringReason=#{gatheringReason}
+			]]>
+		</if>
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND gatheringCode like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>
+	</select>
+
+	<!-- 项目删除 （批量删除）-->
+	<delete id="deleteList" parameterType="java.util.Map">
+		delete from gathering where id in
+		<foreach collection="gatheringList" item="item" index="index"
+		open="(" separator="," close=")">#{item}</foreach>
+	</delete>
+
+	<!--新添项目-->
+	<insert id="saveGathering" parameterType="com.keyan.entity.Gathering">
+        insert into gathering(gatheringCode,paymentUserId,gatheringDate,gatheringMoney,gatheringReason,gatheringStyle,gatheringUserId) 
+        values(
+         #{gatheringCode},#{paymentUserId},#{gatheringDate},#{gatheringMoney},#{gatheringReason},#{gatheringStyle},#{gatheringUserId})
+    </insert>
+
+</mapper>

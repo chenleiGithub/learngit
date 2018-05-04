@@ -1,0 +1,43 @@
+@charset "utf-8";
+/* CSS Document */
+.commLeft
+{float:left;width:692px;}
+.commRight
+{float:right;width:270px;}
+.commTitle
+{width:692px;height:40px; line-height:40px; font-size:24px; color:#d51007; font-family:"微软雅黑"; border-bottom:5px solid #d51007;}
+
+.actpic1
+{width:212px;height:203px;float:left; margin-right:25px;border:1px solid #ccc; margin-top:20px;border-radius:8px;}
+.commLogin
+{border:2px solid #f6a006; width:270px; height:400px;border-radius:10px;}
+.commActContent
+{float:left;width:600px; height:100px; border:1px solid #eee; border-bottom:2px solid #eee;}
+.commActContent ul li.title,.commActContent ul li.content
+{border-bottom:1px solid #eee; height:40px; line-height:40px; font-size:14px; padding-left:10px; color:#afafaf;}
+.commActContent ul li.content
+{ height:60px; border-bottom:none;text-align:left; vertical-align:top;}
+.commActPost
+{ float:left;border:1px solid #eee;height:101px; width:87px;}
+.commActPub
+{ float:left; border:1px solid #eee; height:40px; width:690px;}
+.commActs
+{float:left; border:1px solid #c2b49f; width:690px;margin-top:50px;border-radius:8px; clear:both; background:#f6f2ec;}
+.commActsTitle,.commActsPubtime
+{width:690px;float:left; background:#fff;border-bottom:2px solid #c2b49f; font-size:16px; color:#191919; clear:both;border-top-left-radius:8px;border-top-right-radius:8px;}
+.commActsPubtime
+{ border-bottom:none; float:left; }
+.commActsTitle ul,.commActsPubtime ul
+{height:45px; line-height:45px; padding-left:20px;}
+.commActsPubtime ul
+{height:30px; line-height:30px;}
+.commActsPubtime p
+{padding-left:10px; font-size:16px; font-family:"微软雅黑"; color:#191919;font-weight:bold; height:25px;}
+.commActsPubtime p.view
+{ color:#60605f; font-size:14px; font-weight:normal;}
+.commActsPubPic
+{ border-bottom:none; float:left; clear:both; padding-left:20px; width:670px;}
+.commActsPubPic ul li
+{ padding-right:15px;}
+
+

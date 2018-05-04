@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyan.dao.AssetMapper">
+	<!--查询公共财产信息-->
+	<select id="queryAssetMessage" parameterType="com.keyan.entity.AssetView" resultType="com.keyan.entity.AssetView">
+		<![CDATA[
+		select
+		t.id,
+		t.assetName,
+		t.manager,
+		t.model,
+		t.note,
+		t.position,
+		t.startDate,
+		t.status,
+		t.type,
+		t.value
+		from asset t
+		where 1=1
+		]]>
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND t.assetName like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>	
+		<![CDATA[
+		limit #{startNumber},#{pageSize}
+		]]>
+	</select>
+
+	<!--查询相关项目总数-->
+	<select id="queryAssetMessageCount" parameterType="com.keyan.entity.AssetView" resultType="Integer">
+		select 
+		count(*) 
+		from asset
+		where 1=1
+		<if test="keyValue != null and keyValue != ''">
+			<![CDATA[
+			AND assetName like CONCAT('%', #{keyValue}, '%') 
+			]]>
+		</if>
+	</select>
+
+	<!-- 项目删除 （批量删除）-->
+	<delete id="deleteList" parameterType="java.util.Map">
+		delete from asset where id in
+		<foreach collection="assetList" item="item" index="index"
+		open="(" separator="," close=")">#{item}</foreach>
+	</delete>
+
+	<!--新添项目-->
+	<insert id="saveAsset" parameterType="com.keyan.entity.Asset">
+        insert into asset(assetName,manager,model,note,position,startDate,status,type,value) 
+        values(
+        #{assetName},#{manager},#{model},#{note},#{position},#{startDate},#{status},#{type},#{value})
+    </insert>
+
+</mapper>
